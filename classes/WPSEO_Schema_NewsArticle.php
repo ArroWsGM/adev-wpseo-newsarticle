@@ -1,15 +1,20 @@
 <?php
+
+use Yoast\WP\SEO\Config\Schema_IDs;
+use Yoast\WP\SEO\Context\Meta_Tags_Context;
+use Yoast\WP\SEO\Generators\Schema\Abstract_Schema_Piece;
+
 /**
  * Returns schema Article data.
  */
-class WPSEO_Schema_NewsArticle implements WPSEO_Graph_Piece {
+class WPSEO_Schema_NewsArticle extends Abstract_Schema_Piece {
 
 	/**
 	 * A value object with context variables.
 	 *
-	 * @var WPSEO_Schema_Context
+	 * @var Meta_Tags_Context
 	 */
-	private $context;
+	public $context;
 
 	/**
 	 * WP post object.
@@ -21,9 +26,9 @@ class WPSEO_Schema_NewsArticle implements WPSEO_Graph_Piece {
 	/**
 	 * WPSEO_Schema_Article constructor.
 	 *
-	 * @param WPSEO_Schema_Context $context A value object with context variables.
+	 * @param Meta_Tags_Context $context A value object with context variables.
 	 */
-	public function __construct( WPSEO_Schema_Context $context ) {
+	public function __construct( Meta_Tags_Context $context ) {
 		$this->context = $context;
         $this->post = get_post( $context->id );
 	}
@@ -50,9 +55,9 @@ class WPSEO_Schema_NewsArticle implements WPSEO_Graph_Piece {
 		$data          = array(
 			'@type'            => 'NewsArticle',
 			'@id'              => $this->context->canonical . '#NewsArticle',
-			'mainEntityOfPage' => array( '@id' => $this->context->canonical . WPSEO_Schema_IDs::WEBPAGE_HASH ),
+			'mainEntityOfPage' => array( '@id' => $this->context->canonical . Schema_IDs::WEBPAGE_HASH ),
 			'headline'         => trim( mb_substr( $this->post->post_title, 0, 110, 'UTF-8' ) ),
-			'author'           => array( '@id' => WPSEO_Schema_Utils::get_user_schema_id( $this->post->post_author, $this->context ) ),
+			'author'           => array( '@id' => YoastSEO()->helpers->schema->id->get_user_schema_id( $this->post->post_author, $this->context ) ),
 			'datePublished'    => mysql2date( DATE_W3C, $this->post->post_date_gmt, false ),
 			'dateModified'     => mysql2date( DATE_W3C, $this->post->post_modified_gmt, false ),
             'description'      => $this->get_the_excerpt( $this->post ),
@@ -146,7 +151,7 @@ class WPSEO_Schema_NewsArticle implements WPSEO_Graph_Piece {
 	private function add_image( $data ) {
 		if ( $this->context->has_image ) {
 			$data['image'] = array(
-				'@id' => $this->context->canonical . WPSEO_Schema_IDs::PRIMARY_IMAGE_HASH,
+				'@id' => $this->context->canonical . Schema_IDs::PRIMARY_IMAGE_HASH,
 			);
 		}
 
