@@ -55,7 +55,7 @@ class WPSEO_Schema_NewsArticle extends Abstract_Schema_Piece {
 		$data          = array(
 			'@type'            => 'NewsArticle',
 			'@id'              => $this->context->canonical . '#NewsArticle',
-			'mainEntityOfPage' => array( '@id' => $this->context->canonical . Schema_IDs::WEBPAGE_HASH ),
+			'mainEntityOfPage' => array( '@id' => $this->context->canonical . Schema_IDs::WEBSITE_HASH ),
 			'headline'         => trim( mb_substr( $this->post->post_title, 0, 110, 'UTF-8' ) ),
 			'author'           => array( '@id' => YoastSEO()->helpers->schema->id->get_user_schema_id( $this->post->post_author, $this->context ) ),
 			'datePublished'    => mysql2date( DATE_W3C, $this->post->post_date_gmt, false ),
